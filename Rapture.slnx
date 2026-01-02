@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/AppHost/Rapture.AppHost.csproj" />
     <Project Path="src/Common/Rapture.Common.csproj" />
   </Folder>
 </Solution>
