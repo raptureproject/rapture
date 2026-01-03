@@ -3,4 +3,6 @@
 
 var builder = DistributedApplication.CreateBuilder(args);
 
+builder.AddProject<Projects.Rapture_Client>("client");
+
 builder.Build().Run();
