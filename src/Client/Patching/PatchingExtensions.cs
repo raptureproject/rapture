@@ -33,6 +33,7 @@ public static class PatchingExtensions
     public static WebApplication UsePatching(this WebApplication app)
     {
         VersionCheckEndpoint.Configure(app);
+        AnnounceEndpoint.Configure(app);
 
         return app;
     }
