@@ -3,14 +3,17 @@
 
 using Rapture.Client.Core;
 using Rapture.Client.Launcher;
+using Rapture.Client.Patching;
 
 var builder = WebApplication.CreateSlimBuilder();
 
 builder.ConfigureCore()
-    .ConfigureLauncher();
+    .ConfigureLauncher()
+    .ConfigurePatching();
 
 var app = builder.Build();
 
-app.UseCore();
+app.UseCore()
+    .UsePatching();
 
 app.Run();
