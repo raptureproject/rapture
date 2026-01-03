@@ -39,10 +39,12 @@ public class Announce(string serviceName) : IResult, IEndpointMetadataProvider, 
 
         httpContext.Response.Headers["Connection"] = "close";
 
+        var endpoint = IPEndPoint.Parse("127.0.0.1:55296");
+
         byte[] peers =
         [
-            .. IPAddress.Loopback.GetAddressBytes(),
-            .. BitConverter.GetBytes(54998)
+            .. endpoint.Address.GetAddressBytes(),
+            .. BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)endpoint.Port))
         ];
 
         var response = new BEncodedDictionary
