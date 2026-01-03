@@ -2,10 +2,12 @@
 // The Rapture Project licenses this file to you under the MIT license.
 
 using Rapture.Client.Core;
+using Rapture.Client.Launcher;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder();
 
-builder.ConfigureCore();
+builder.ConfigureCore()
+    .ConfigureLauncher();
 
 var app = builder.Build();
 

@@ -1,0 +1,7 @@
+MessageBox
+CreateProcess
+ResumeThread
+OpenProcess
+VirtualProtectEx
+WriteProcessMemory
+TerminateProcess
