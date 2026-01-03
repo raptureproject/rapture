@@ -6,6 +6,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Rapture.Client.Core.Services;
 
 namespace Rapture.Client.Core;
 
@@ -22,7 +23,8 @@ public static class CoreExtensions
     /// <returns>The same WebApplicationBuilder instance, configured with core services and middleware.</returns>
     public static WebApplicationBuilder ConfigureCore(this WebApplicationBuilder builder)
     {
-        return builder.ConfigureUrls()
+        return builder.ConfigureLifetimeService()
+            .ConfigureUrls()
             .ConfigureTelemetry()
             .ConfigureHealthChecks()
             .ConfigureServiceDiscovery()
@@ -37,6 +39,13 @@ public static class CoreExtensions
     public static WebApplication UseCore(this WebApplication app)
     {
         return app.UseHealthChecks();
+    }
+
+    private static WebApplicationBuilder ConfigureLifetimeService(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHostedService<LifetimeService>();
+
+        return builder;
     }
 
     private static WebApplicationBuilder ConfigureUrls(this WebApplicationBuilder builder)
