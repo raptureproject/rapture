@@ -41,7 +41,7 @@ public class UpdateInfo(IEnumerable<PatchInfo> updateInfo) : IResult, IEndpointM
 
         var latestInfo = Value.Last();
         var hostEnvironment = httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-        var basePath = Path.Combine(hostEnvironment.WebRootPath, "patchdata");
+        var basePath = Path.Combine(hostEnvironment.WebRootPath, "patchdata", "ffxiv");
 
         httpContext.Response.Headers["Connection"] = "keep-alive";
         httpContext.Response.Headers["Content-Location"] = $"ffxiv/{latestInfo.RepositoryHash}/vercheck.dat";
