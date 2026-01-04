@@ -3,15 +3,17 @@
 
 using MonoTorrent;
 using MonoTorrent.Client;
+using Rapture.Client.Patching.Logging;
 
 namespace Rapture.Client.Patching.Services;
 
 /// <summary>
-/// 
+/// Provides a background service that manages the lifecycle of torrent downloads for patch data using the specified client engine.
 /// </summary>
-/// <param name="clientEngine"></param>
-/// <param name="hostEnvironment"></param>
-public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostEnvironment) : BackgroundService
+/// <param name="clientEngine">The torrent client engine used to manage and coordinate torrent downloads.</param>
+/// <param name="hostEnvironment">The web host environment that provides access to the application's web root path for locating patch data.</param>
+/// <param name="logger">The logger used to record informational and diagnostic messages related to torrent activity.</param>
+public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostEnvironment, ILogger<TorrentService> logger) : BackgroundService
 {
     /// <inheritdoc/>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -26,6 +28,9 @@ public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostE
                     var torrent = await Torrent.LoadAsync(file);
                     var manager = await clientEngine.AddAsync(torrent, dataPath);
 
+                    manager.PeerConnected += OnPeerConnected;
+                    manager.PeerDisconnected += OnPeerDisconnected;
+
                     await manager.StartAsync();
                 });
             });
@@ -38,8 +43,27 @@ public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostE
         }
 
         var stopTasks = clientEngine.Torrents
-            .Select(manager => manager.StopAsync());
+            .Select(manager =>
+            {
+                return Task.Run(async () =>
+                {
+                    manager.PeerConnected -= OnPeerConnected;
+                    manager.PeerDisconnected -= OnPeerDisconnected;
+
+                    await manager.StopAsync();
+                });
+            });
 
         await Task.WhenAll(stopTasks);
+    }
+
+    private void OnPeerConnected(object? sender, PeerConnectedEventArgs e)
+    {
+        PatchingLogger.LogClientStartedDownloading(logger, e.TorrentManager.Files.First().Path);
+    }
+
+    private void OnPeerDisconnected(object? sender, PeerDisconnectedEventArgs e)
+    {
+        PatchingLogger.LogClientStoppedDownloading(logger, e.TorrentManager.Files.First().Path);
     }
 }

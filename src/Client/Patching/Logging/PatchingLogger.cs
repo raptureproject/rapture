@@ -17,12 +17,12 @@ public static partial class PatchingLogger
     [LoggerMessage(EventId = 2, Level = LogLevel.Information, Message = "Client {Type} version {CurrentVersion} needs update to {LatestVersion}.")]
     public static partial void LogClientNeedsUpdate(ILogger logger, string type, string currentVersion, string latestVersion);
 
-    [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Client announced started downloading {InfoHash}.")]
-    public static partial void LogClientAnnouncedStarted(ILogger logger, string infoHash);
+    [LoggerMessage(EventId = 3, Level = LogLevel.Information, Message = "Client started downloading file {FilePath}.")]
+    public static partial void LogClientStartedDownloading(ILogger logger, string filePath);
 
-    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Client announced stopped downloading {InfoHash}.")]
-    public static partial void LogClientAnnouncedStopped(ILogger logger, string infoHash);
+    [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "Client stopped downloading file {FilePath}.")]
+    public static partial void LogClientStoppedDownloading(ILogger logger, string filePath);
 
-    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Client announced completed downloading {InfoHash}.")]
-    public static partial void LogClientAnnouncedCompleted(ILogger logger, string infoHash);
+    [LoggerMessage(EventId = 5, Level = LogLevel.Information, Message = "Client completed downloading file {FilePath}.")]
+    public static partial void LogClientCompletedDownloading(ILogger logger, string filePath);
 }

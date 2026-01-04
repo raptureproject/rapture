@@ -26,4 +26,8 @@
     <PackageReference Include="RaptureTorrent" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Rapture.Common.csproj" />
+  </ItemGroup>
+
 </Project>
