@@ -2,6 +2,7 @@
 // The Rapture Project licenses this file to you under the MIT license.
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using Rapture.Client.Patching.Logging;
 using Rapture.Client.Patching.Results;
 using Rapture.Client.Patching.Services;
 
@@ -21,12 +22,15 @@ public class VersionCheckEndpoint
         builder.MapGet("patch/vercheck/ffxiv/{platform}/{channel}/{type}/{version}", Handle);
     }
 
-    private static Results<UpdateInfo, UpToDate, NotFound> Handle(PatchService patchService, string platform, string channel, string type, string version)
+    private static Results<UpdateInfo, UpToDate, NotFound> Handle(PatchService patchService, ILogger<VersionCheckEndpoint> logger, string platform, string channel, string type, string version)
     {
+        PatchingLogger.LogVersionCheck(logger, type, version);
+
         var currentPatch = patchService.GetPatch(platform, channel, type, version);
 
         if (currentPatch == null)
         {
+            PatchingLogger.LogVersionNotFound(logger, type, version);
             return TypedResults.NotFound();
         }
 
@@ -34,10 +38,13 @@ public class VersionCheckEndpoint
 
         if (version == latestVersion.Version)
         {
+            PatchingLogger.LogClientUpToDate(logger, type, version);
             return PatchResults.UpToDate(latestVersion);
         }
 
         var updateVersions = patchService.GetUpdateVersions(platform, channel, type, currentPatch);
+
+        PatchingLogger.LogClientNeedsUpdate(logger, type, version, latestVersion.Version);
 
         return PatchResults.UpdateInfo(updateVersions);
     }
