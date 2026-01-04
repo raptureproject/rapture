@@ -33,10 +33,9 @@ public static class PatchResults
     /// <summary>
     /// Produces a <see cref="StatusCodes.Status200OK"/> response.
     /// </summary>
-    /// <param name="serviceName">The service name that contains the IPs of peers.</param>
-    /// <returns>The created <see cref="Announce(string)"/> for the response.</returns>
-    public static Announce Announce(string serviceName)
+    /// <returns>The created <see cref="Announce()"/> for the response.</returns>
+    public static Announce Announce()
     {
-        return new(serviceName);
+        return new();
     }
 }

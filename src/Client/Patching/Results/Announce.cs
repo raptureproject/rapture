@@ -11,29 +11,16 @@ namespace Rapture.Client.Patching.Results;
 /// <summary>
 /// Creates a <see cref="Announce"/> result type.
 /// </summary>
-/// <param name="serviceName">The service name that contains the IPs of peers.</param>
-public class Announce(string serviceName) : IResult, IEndpointMetadataProvider, IStatusCodeHttpResult, IValueHttpResult, IValueHttpResult<string>
+public class Announce : IResult, IEndpointMetadataProvider, IStatusCodeHttpResult
 {
     /// <summary>
     /// Gets the HTTP status code: <see cref="StatusCodes.Status200OK"/>
     /// </summary>
     public int? StatusCode => 200;
 
-    /// <summary>
-    /// Gets the service name.
-    /// </summary>
-    public string? Value { get; } = serviceName;
-
-    object? IValueHttpResult.Value => Value;
-
     /// <inheritdoc/>
     public async Task ExecuteAsync(HttpContext httpContext)
     {
-        if (Value == null)
-        {
-            throw new InvalidOperationException("Service name cannot be null!");
-        }
-
         httpContext.Response.StatusCode = (int)StatusCode!;
         httpContext.Response.ContentType = "text/plain";
 

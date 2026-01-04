@@ -21,6 +21,6 @@ public class AnnounceEndpoint
 
     private static Announce Handle()
     {
-        return PatchResults.Announce("patch");
+        return PatchResults.Announce();
     }
 }
