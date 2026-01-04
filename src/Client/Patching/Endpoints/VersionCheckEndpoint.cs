@@ -24,8 +24,6 @@ public class VersionCheckEndpoint
 
     private static Results<UpdateInfo, UpToDate, NotFound> Handle(PatchService patchService, ILogger<VersionCheckEndpoint> logger, string platform, string channel, string type, string version)
     {
-        PatchingLogger.LogVersionCheck(logger, type, version);
-
         var currentPatch = patchService.GetPatch(platform, channel, type, version);
 
         if (currentPatch == null)
