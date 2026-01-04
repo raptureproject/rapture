@@ -1,6 +1,7 @@
 ﻿// Licensed to the Rapture Project under one or more agreements.
 // The Rapture Project licenses this file to you under the MIT license.
 
+using MonoTorrent.Client;
 using Rapture.Client.Patching.Endpoints;
 using Rapture.Client.Patching.Repositories;
 using Rapture.Client.Patching.Services;
@@ -19,6 +20,24 @@ public static class PatchingExtensions
     /// <returns>The same <see cref="IHostApplicationBuilder"/> instance so that additional configuration calls can be chained.</returns>
     public static IHostApplicationBuilder ConfigurePatching(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddSingleton(services =>
+        {
+            var webHostEnvironment = services.GetRequiredService<IWebHostEnvironment>();
+
+            var builder = new EngineSettingsBuilder()
+            {
+                CacheDirectory = Path.Combine(webHostEnvironment.WebRootPath, "patchdata", "cache")
+            };
+
+            return builder.ToSettings();
+        });
+
+        builder.Services.AddSingleton(services =>
+        {
+            return new ClientEngine(services.GetRequiredService<EngineSettings>());
+        });
+
+        builder.Services.AddHostedService<TorrentService>();
         builder.Services.AddSingleton<PatchRepository>();
         builder.Services.AddScoped<PatchService>();
 
