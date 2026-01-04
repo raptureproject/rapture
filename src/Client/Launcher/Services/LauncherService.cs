@@ -3,6 +3,7 @@
 
 using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
@@ -61,6 +62,11 @@ public class LauncherService : BackgroundService
 
     private static unsafe void StartBoot(string bootDirectory)
     {
+        if (Environment.ProcessorCount > 14)
+        {
+            Process.GetCurrentProcess().ProcessorAffinity = 0x3FFF;
+        }
+
         var bootPath = Path.Combine(bootDirectory, "ffxivboot.exe");
 
         var success = PInvoke.CreateProcess(bootPath, null, null, false, PROCESS_CREATION_FLAGS.CREATE_SUSPENDED, null, bootDirectory, new STARTUPINFOW(), out var process);
