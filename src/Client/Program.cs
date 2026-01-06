@@ -8,8 +8,8 @@ using Rapture.Client.Patching;
 var builder = WebApplication.CreateSlimBuilder();
 
 builder.ConfigureCore()
-    .ConfigureLauncher()
-    .ConfigurePatching();
+    .ConfigurePatching()
+    .ConfigureLauncher();
 
 var app = builder.Build();
 

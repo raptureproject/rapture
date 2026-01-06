@@ -21,15 +21,7 @@ namespace Rapture.Client.Launcher.Services;
 public class LauncherService : BackgroundService
 {
     /// <inheritdoc/>
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        // Delay to ensure server starts.
-        await Task.Delay(100, stoppingToken);
-
-        LaunchGame();
-    }
-
-    private static void LaunchGame()
+    public override Task StartAsync(CancellationToken cancellationToken)
     {
         var gamePath = GetGameInstallPath();
 
@@ -40,6 +32,48 @@ public class LauncherService : BackgroundService
         }
 
         StartBoot(gamePath);
+
+        return base.StartAsync(cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await Task.Delay(1000, stoppingToken);
+
+            if (GetMonitoredProcesses().Count == 0)
+            {
+                await Task.Delay(500, stoppingToken);
+
+                // Double check no processes are running.
+                if (GetMonitoredProcesses().Count == 0)
+                {
+                    Environment.Exit(0);
+                }
+            }
+        }
+    }
+
+    /// <inheritdoc/>
+    public override async Task StopAsync(CancellationToken cancellationToken)
+    {
+        await base.StopAsync(cancellationToken);
+
+        var gameProcesses = GetMonitoredProcesses();
+
+        foreach (var process in gameProcesses)
+        {
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill();
+                }
+            }
+            catch { }
+        }
     }
 
     private static string? GetGameInstallPath()
@@ -62,11 +96,6 @@ public class LauncherService : BackgroundService
 
     private static unsafe void StartBoot(string bootDirectory)
     {
-        if (Environment.ProcessorCount > 14)
-        {
-            Process.GetCurrentProcess().ProcessorAffinity = 0x3FFF;
-        }
-
         var bootPath = Path.Combine(bootDirectory, "ffxivboot.exe");
 
         var success = PInvoke.CreateProcess(bootPath, null, null, false, PROCESS_CREATION_FLAGS.CREATE_SUSPENDED, null, bootDirectory, new STARTUPINFOW(), out var process);
@@ -122,5 +151,16 @@ public class LauncherService : BackgroundService
             PInvoke.MessageBox(HWND.Null, "Failed To Start ffxivboot.exe!", "Final Fantasy XIV Launch Failed", MESSAGEBOX_STYLE.MB_ICONERROR);
             Environment.Exit(1);
         }
+    }
+
+    private static List<Process> GetMonitoredProcesses()
+    {
+        return
+        [
+            .. Process.GetProcessesByName("ffxivboot"),
+            .. Process.GetProcessesByName("ffxivupdater"),
+            .. Process.GetProcessesByName("ffxivlogin"),
+            .. Process.GetProcessesByName("ffxivgame"),
+        ];
     }
 }
