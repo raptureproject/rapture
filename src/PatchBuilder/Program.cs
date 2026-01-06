@@ -38,4 +38,16 @@ loginFile.ApplyPatch(0x53EA0, [
     0x7E, 0x35, 0x99, 0xB9, 0x57
 ]);
 
+var gameFile = gamePatch.AddFile("ffxivgame.exe");
+
+// SetProcessAffinityMask
+gameFile.ApplyPatch(0x3698, [.. Enumerable.Repeat<byte>(0x90, 30)]);
+
+// SQEX::CDev::Engine::Vfx::Qix::Thread::ThreadManager::CreateEffectThread
+gameFile.ApplyPatch(0x7B952B, [0xB5, 0x01]);
+gameFile.ApplyPatch(0x7B95D3, [0xB5, 0x01]);
+
+// lobby01.ffxiv.com -> 127.0.0.1
+gameFile.ApplyPatch(0x966404, Encoding.ASCII.GetBytes("127.0.0.1\0\0\0\0\0\0\0\0\0\0\0"));
+
 gamePatch.Save();
