@@ -31,7 +31,7 @@ public class PatchInfo
     /// <summary>
     /// Gets the date on which the build was created.
     /// </summary>
-    public required DateOnly BuildTime { get; init; }
+    public required DateTime BuildTime { get; init; }
 
     /// <summary>
     /// Gets the size of the file, in bytes.
