@@ -13,10 +13,10 @@ namespace Rapture.Client.Patching.Services;
 /// <param name="clientEngine">The torrent client engine used to manage and coordinate torrent downloads.</param>
 /// <param name="hostEnvironment">The web host environment that provides access to the application's web root path for locating patch data.</param>
 /// <param name="logger">The logger used to record informational and diagnostic messages related to torrent activity.</param>
-public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostEnvironment, ILogger<TorrentService> logger) : BackgroundService
+public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostEnvironment, ILogger<TorrentService> logger) : IHostedService
 {
     /// <inheritdoc/>
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
         var dataPath = Path.Combine(hostEnvironment.WebRootPath, "patchdata", "ffxiv");
 
@@ -35,13 +35,12 @@ public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostE
                 });
             });
 
-        await Task.WhenAll(startTasks);
+        return Task.WhenAll(startTasks);
+    }
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(60000, stoppingToken);
-        }
-
+    /// <inheritdoc/>
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
         var stopTasks = clientEngine.Torrents
             .Select(manager =>
             {
@@ -54,7 +53,7 @@ public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostE
                 });
             });
 
-        await Task.WhenAll(stopTasks);
+        return Task.WhenAll(stopTasks);
     }
 
     private void OnPeerConnected(object? sender, PeerConnectedEventArgs e)
