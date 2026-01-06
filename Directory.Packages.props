@@ -12,6 +12,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.14.0" />
-    <PackageVersion Include="RaptureTorrent" Version="3.0.3" />
+    <PackageVersion Include="RaptureTorrent" Version="3.0.5" />
+    <PackageVersion Include="System.IO.Hashing" Version="10.0.1" />
   </ItemGroup>
 </Project>

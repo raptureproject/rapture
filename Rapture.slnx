@@ -1,7 +1,8 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/AppHost/Rapture.AppHost.csproj" />
-    <Project Path="src/Common/Rapture.Common.csproj" />
     <Project Path="src/Client/Rapture.Client.csproj" />
+    <Project Path="src/Common/Rapture.Common.csproj" />
+    <Project Path="src/PatchBuilder/Rapture.PatchBuilder.csproj" />
   </Folder>
 </Solution>
