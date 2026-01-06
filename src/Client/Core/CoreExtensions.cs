@@ -43,7 +43,8 @@ public static class CoreExtensions
     {
         builder.WebHost.UseUrls(
             "http://127.0.0.1:54996", // Version Check
-            "http://127.0.0.1:54997" // Patch Tracker
+            "http://127.0.0.1:54997", // Patch Tracker
+            "http://127.0.0.1:54998" // Login
         );
 
         return builder;
