@@ -160,7 +160,7 @@ public class LauncherService : BackgroundService
             .. Process.GetProcessesByName("ffxivboot"),
             .. Process.GetProcessesByName("ffxivupdater"),
             .. Process.GetProcessesByName("ffxivlogin"),
-            .. Process.GetProcessesByName("ffxivgame"),
+            .. Process.GetProcessesByName("ffxivgame")
         ];
     }
 }
