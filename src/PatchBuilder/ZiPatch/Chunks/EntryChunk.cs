@@ -45,9 +45,10 @@ public class EntryChunk : Chunk, IDisposable
     {
         using var sha1 = SHA1.Create();
         var newEntryHash = sha1.ComputeHash(_entryData);
+        var entrySize = 68 + _entryPath.Length + _entryData.Length;
         _entryData.Position = 0;
 
-        writer.Write((uint)0); // Entry Size
+        writer.Write((uint)entrySize); // Entry Size
         writer.StartCrc();
         writer.Write(Encoding.ASCII.GetBytes("ETRY")); // ETRY
         writer.Write((uint)_entryPath.Length); // Entry Path Length
