@@ -15,6 +15,9 @@ namespace Rapture.Client.Patching.Services;
 /// <param name="logger">The logger used to record informational and diagnostic messages related to torrent activity.</param>
 public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostEnvironment, ILogger<TorrentService> logger) : IHostedService
 {
+    private string? _lastFileConnected;
+    private string? _lastFileDisconnected;
+
     /// <inheritdoc/>
     public Task StartAsync(CancellationToken cancellationToken)
     {
@@ -58,11 +61,23 @@ public class TorrentService(ClientEngine clientEngine, IWebHostEnvironment hostE
 
     private void OnPeerConnected(object? sender, PeerConnectedEventArgs e)
     {
-        PatchingLogger.LogClientStartedDownloading(logger, e.TorrentManager.Files.First().Path);
+        var file = e.TorrentManager.Files.First().Path;
+
+        if (_lastFileConnected != file)
+        {
+            _lastFileConnected = file;
+            PatchingLogger.LogClientStartedDownloading(logger, file);
+        }
     }
 
     private void OnPeerDisconnected(object? sender, PeerDisconnectedEventArgs e)
     {
-        PatchingLogger.LogClientStoppedDownloading(logger, e.TorrentManager.Files.First().Path);
+        var file = e.TorrentManager.Files.First().Path;
+
+        if (_lastFileDisconnected != file)
+        {
+            _lastFileDisconnected = file;
+            PatchingLogger.LogClientStoppedDownloading(logger, file);
+        }
     }
 }
