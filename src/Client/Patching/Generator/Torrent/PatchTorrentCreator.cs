@@ -3,7 +3,7 @@
 
 using MonoTorrent;
 
-namespace Rapture.PatchBuilder.Torrent;
+namespace Rapture.Client.Patching.Generator.Torrent;
 
 /// <summary>
 /// Provides functionality for creating patch torrent files using the V1 torrent format.

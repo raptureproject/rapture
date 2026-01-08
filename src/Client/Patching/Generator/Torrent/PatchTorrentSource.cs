@@ -3,7 +3,7 @@
 
 using MonoTorrent;
 
-namespace Rapture.PatchBuilder.Torrent;
+namespace Rapture.Client.Patching.Generator.Torrent;
 
 /// <summary>
 /// Initializes a new instance of the PatchTorrentSource class using the specified full patch file path and relative patch path.

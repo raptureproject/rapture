@@ -1,12 +1,13 @@
 ﻿// Licensed to the Rapture Project under one or more agreements.
 // The Rapture Project licenses this file to you under the MIT license.
 
-using Microsoft.Win32;
-using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
+using Rapture.Client.Core.Utilities;
 using System.Text;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 
-namespace Rapture.PatchBuilder.ZiPatch.Chunks;
+namespace Rapture.Client.Patching.Generator.ZiPatch.Chunks;
 
 /// <summary>
 /// Represents a chunk that encapsulates a file entry, including its path, data, hash, and size information, for use in patching operations.
@@ -22,29 +23,33 @@ public class EntryChunk : Chunk, IDisposable
     /// Initializes a new instance of the EntryChunk class by loading the specified file and computing its hash and size.
     /// </summary>
     /// <param name="entryPath">The relative path to the file to be loaded. Must not be null or empty.</param>
-    [SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "This is for file hashing.")]
     public EntryChunk(string entryPath)
     {
         _entryPath = entryPath;
         _entryData = new();
 
-        using var fileStream = File.OpenRead(Path.Combine(GetGameInstallPath(), entryPath));
-        using var sha1 = SHA1.Create();
+        var gamePath = GameUtilities.GetGameInstallPath();
+
+        if (gamePath is null)
+        {
+            PInvoke.MessageBox(HWND.Null, "A Final Fantasy XIV 1.0 Install Was Not Found!", "Final Fantasy XIV Not Installed", MESSAGEBOX_STYLE.MB_ICONERROR);
+            Environment.Exit(1);
+        }
+
+        using var fileStream = File.OpenRead(Path.Combine(gamePath, entryPath));
 
         fileStream.CopyTo(_entryData);
         fileStream.Position = 0;
-        _oldEntryHash = sha1.ComputeHash(fileStream);
+        _oldEntryHash = HashingUtilities.SHA1HashStream(fileStream);
         _oldEntrySize = (uint)fileStream.Length;
 
         _entryData.Position = 0;
     }
 
     /// <inheritdoc/>
-    [SuppressMessage("Security", "CA5350:Do Not Use Weak Cryptographic Algorithms", Justification = "This is for file hashing.")]
     public override void Write(PatchWriter writer)
     {
-        using var sha1 = SHA1.Create();
-        var newEntryHash = sha1.ComputeHash(_entryData);
+        var newEntryHash = HashingUtilities.SHA1HashStream(_entryData);
         var entrySize = 68 + _entryPath.Length + _entryData.Length;
         _entryData.Position = 0;
 
@@ -83,19 +88,5 @@ public class EntryChunk : Chunk, IDisposable
         _entryData.Dispose();
 
         GC.SuppressFinalize(this);
-    }
-
-    private static string GetGameInstallPath()
-    {
-        var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{F2C4E6E0-EB78-4824-A212-6DF6AF0E8E82}")
-            ?? throw new InvalidOperationException("Game is not installed.");
-
-        if (key.GetValue("InstallLocation") is not string installLocation ||
-            key.GetValue("DisplayName") is not string displayName)
-        {
-            throw new InvalidOperationException("Game is not installed.");
-        }
-
-        return Path.Combine(installLocation, displayName);
     }
 }

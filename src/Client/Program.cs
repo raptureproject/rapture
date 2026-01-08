@@ -6,7 +6,7 @@ using Rapture.Client.Launcher;
 using Rapture.Client.Patching;
 using Rapture.Client.Shell;
 
-var builder = WebApplication.CreateSlimBuilder();
+var builder = WebApplication.CreateSlimBuilder(args);
 
 builder.ConfigureCore()
     .ConfigureShell()

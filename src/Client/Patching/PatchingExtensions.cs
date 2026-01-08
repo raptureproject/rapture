@@ -3,6 +3,7 @@
 
 using MonoTorrent.Client;
 using Rapture.Client.Patching.Endpoints;
+using Rapture.Client.Patching.Generator;
 using Rapture.Client.Patching.Repositories;
 using Rapture.Client.Patching.Services;
 
@@ -20,6 +21,12 @@ public static class PatchingExtensions
     /// <returns>The same <see cref="IHostApplicationBuilder"/> instance so that additional configuration calls can be chained.</returns>
     public static IHostApplicationBuilder ConfigurePatching(this IHostApplicationBuilder builder)
     {
+        if (builder.Configuration.GetValue<bool>("GeneratePatches"))
+        {
+            PatchGenerator.GenerateAllPatches();
+            Environment.Exit(0);
+        }
+
         builder.Services.AddSingleton(services =>
         {
             var webHostEnvironment = services.GetRequiredService<IWebHostEnvironment>();

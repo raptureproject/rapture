@@ -3,7 +3,7 @@
 
 using System.IO.Hashing;
 
-namespace Rapture.PatchBuilder.ZiPatch;
+namespace Rapture.Client.Patching.Generator.ZiPatch;
 
 /// <summary>
 /// Provides functionality for writing patch data to a stream in binary format.

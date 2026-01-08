@@ -1,7 +1,7 @@
 ﻿// Licensed to the Rapture Project under one or more agreements.
 // The Rapture Project licenses this file to you under the MIT license.
 
-namespace Rapture.PatchBuilder.ZiPatch;
+namespace Rapture.Client.Patching.Generator.ZiPatch;
 
 /// <summary>
 /// Specifies the type of patch to apply, such as for boot or game components.

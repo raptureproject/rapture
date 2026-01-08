@@ -3,7 +3,7 @@
 
 using System.Text;
 
-namespace Rapture.PatchBuilder.ZiPatch.Chunks;
+namespace Rapture.Client.Patching.Generator.ZiPatch.Chunks;
 
 /// <summary>
 /// Represents the file header chunk in a patch file, containing metadata and version information required for interpreting the patch contents.

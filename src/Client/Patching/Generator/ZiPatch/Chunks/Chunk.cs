@@ -1,7 +1,7 @@
 ﻿// Licensed to the Rapture Project under one or more agreements.
 // The Rapture Project licenses this file to you under the MIT license.
 
-namespace Rapture.PatchBuilder.ZiPatch.Chunks;
+namespace Rapture.Client.Patching.Generator.ZiPatch.Chunks;
 
 /// <summary>
 /// Represents an abstract data chunk that can be written to a binary stream.

@@ -3,7 +3,7 @@
 
 using System.Text;
 
-namespace Rapture.PatchBuilder.ZiPatch.Chunks;
+namespace Rapture.Client.Patching.Generator.ZiPatch.Chunks;
 
 /// <summary>
 /// Represents a patch chunk that applies an option to the target using the 'APLY' format.

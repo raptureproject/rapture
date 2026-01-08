@@ -1,10 +1,10 @@
 ﻿// Licensed to the Rapture Project under one or more agreements.
 // The Rapture Project licenses this file to you under the MIT license.
 
-using Rapture.PatchBuilder.Torrent;
-using Rapture.PatchBuilder.ZiPatch.Chunks;
+using Rapture.Client.Patching.Generator.Torrent;
+using Rapture.Client.Patching.Generator.ZiPatch.Chunks;
 
-namespace Rapture.PatchBuilder.ZiPatch;
+namespace Rapture.Client.Patching.Generator.ZiPatch;
 
 /// <summary>
 /// Represents a patch that can be constructed, modified, and saved to disk, including support for generating an associated torrent file.
