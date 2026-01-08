@@ -3,12 +3,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 using MonoTorrent;
-using MonoTorrent.BEncoding;
 using MonoTorrent.Client;
 using Rapture.Client.Patching.Logging;
 using Rapture.Client.Patching.Results;
-using Rapture.Common.Cryptography;
-using System.Security.Cryptography;
 
 namespace Rapture.Client.Patching.Endpoints;
 
@@ -35,19 +32,14 @@ public class AnnounceEndpoint
     {
         if (eventName == "completed")
         {
-            var infoHash = InfoHash.UrlDecode(infoHashEncoded);
-            var peerId = new BEncodedString(peerIdString);
-
-            using var blowfish = Blowfish.Create();
-            blowfish.Key = peerId.Span.ToArray();
+            var clientHash = InfoHash.UrlDecode(infoHashEncoded).Span[16..].ToArray();
 
             var torrent = clientEngine.Torrents
                 .First(t =>
                 {
-                    var encHash = t.InfoHashes.V1OrV2.Span.ToArray();
-                    blowfish.EncryptEcb(t.InfoHashes.V1OrV2.Span[..16], encHash, PaddingMode.None);
+                    var torrentHash = t.InfoHashes.V1OrV2.Span[16..];
 
-                    return MemoryExtensions.SequenceEqual(infoHash.Span, encHash.AsSpan());
+                    return MemoryExtensions.SequenceEqual(clientHash, torrentHash);
                 });
 
             PatchingLogger.LogClientCompletedDownloading(logger, torrent.Files.First().Path);
