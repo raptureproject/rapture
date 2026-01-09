@@ -112,7 +112,7 @@ public class LauncherService : BackgroundService
         ApplyPatch(processHandle, baseOffset + 0x5DF64, [0x01, 0x00, 0x00, 0x00]);
 
         // ver01.ffxiv.com -> 127.0.0.1
-        ApplyPatch(processHandle, baseOffset + 0x8E62DC, Encoding.ASCII.GetBytes("127.0.0.1\0\0\0\0\0\0\0"));
+        ApplyPatch(processHandle, baseOffset + 0x8E62DC, Encoding.ASCII.GetBytes("127.0.0.1\0\0\0\0\0\0"));
     }
 
     private static unsafe void ApplyPatch(SafeFileHandle processHandle, nuint address, byte[] patchData)

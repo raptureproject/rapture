@@ -22,7 +22,7 @@ public static class PatchGenerator
         GenerateBootPatch();
         GenerateGamePatch();
 
-        PInvoke.MessageBox(HWND.Null, "Patches generated successfully!", "Rapture Patch Generator", MESSAGEBOX_STYLE.MB_ICONERROR);
+        PInvoke.MessageBox(HWND.Null, "Patches generated successfully!", "Rapture Patch Generator", MESSAGEBOX_STYLE.MB_ICONINFORMATION);
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ public static class PatchGenerator
         bootFile.ApplyPatch(0x64324, [0x01, 0x00, 0x00, 0x00]);
 
         // ver01.ffxiv.com -> 127.0.0.1
-        bootFile.ApplyPatch(0x966404, Encoding.ASCII.GetBytes("127.0.0.1\0\0\0\0\0\0\0"));
+        bootFile.ApplyPatch(0x966404, Encoding.ASCII.GetBytes("127.0.0.1\0\0\0\0\0\0"));
 
         bootPatch.Save();
     }
@@ -80,7 +80,7 @@ public static class PatchGenerator
         gameFile.ApplyPatch(0x7B95D3, [0xB5, 0x01]);
 
         // lobby01.ffxiv.com -> 127.0.0.1
-        gameFile.ApplyPatch(0x966404, Encoding.ASCII.GetBytes("127.0.0.1\0\0\0\0\0\0\0\0\0\0\0"));
+        gameFile.ApplyPatch(0xB90110, Encoding.ASCII.GetBytes("127.0.0.1\0\0\0\0\0\0\0\0"));
 
         gamePatch.Save();
     }
